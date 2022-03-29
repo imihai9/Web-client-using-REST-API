@@ -1,0 +1,50 @@
+Tema 3 - Protocoale de Comunicatie
+Mihai Ionescu, 325CD, CTI
+
+Rulare:
+
+	make
+	./client
+
+Implementare:
+
+Programul parseaza comenzi de la tastatura, in bucla, in functia
+parse_client_cmd. Aceasta citeste primul cuvant asociat comenzii
+(ex. 'get_book'), dupa care apeleaza alte functii care:
+- citesc argumentele specifice fiecarei comenzi;
+- construiesc cererea HTTP de trimis catre server (GET / POST / DELETE);
+- trimit cererea catre server;
+- primesc raspunsul HTTP;
+- interpreteaza raspunsul HTTP, conform codului de stare de pe prima linie a
+raspunsului (pentru erori, de la caz la caz, fie se incearca extragerea
+erorii de la finalul raspunsului, fie se afiseaza un mesaj conform cu codul
+de stare).
+- functia client_login intoarce cookie-ul de Session ID, iar functia
+client_enter_lib intoarce token-ul JWT.
+
+Caz special:
+- in cazul in care se da comanda 'login' cand o sesiune este deja activa,
+se sterge cookie-ul cu Session ID si, eventual, Token-ul de autorizare JWT,
+fara a trimite efectiv o cerere de 'logout' catre server, dupa care se trimite
+cererea de login in mod normal.
+
+Punctul de pornire al programului a fost scheletul si rezolvarea mea a
+laboratorului 10, PC, care au fost modificare prin adaugarea unor functii
+auxiliare, sau modificarea altora (ex. functiile din requests.c - 
+compute_get_request, compute_post_request acum accepta si un token de auth,
+pe care il adauga in cerere, ca un camp suplimentar; am adaugat
+compute_delete_request).
+
+Pentru crearea si parsarea de stringuri in format JSON, am folosit
+biblioteca 'Parson'. (ex. pentru add_book).
+
+Nota:
+De fiecare data cand se trimite un mesaj catre server, conexiunea este
+reinitializata (send_to_server_wrapper) din cauza timeout-ului de 5 secunde.
+O rezolvare mai buna probabil ca ar verifica daca conexiunea a ramas
+deschisa (de ex. prin valoarea de retur a functiei send), redeschizand-o
+doar daca este necesar.
+
+Referinte:
+- Scheletul si rezolvarea personala pentru laboratorul 10, PC.
+- Parson JSON library: https://github.com/kgabis/parson
